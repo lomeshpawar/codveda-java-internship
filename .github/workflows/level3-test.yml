@@ -1,17 +1,19 @@
-name: Level 3 Java Tests
+name: Java CI
 
 on:
   push:
-    paths-ignore:
-      - 'Level-3/*/screenshots/**'
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  level3:
+  build-and-test:
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:8.4
@@ -27,28 +29,77 @@ jobs:
           --health-retries=10
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
+      - name: Compile Level 1 projects
+        run: |
+          mkdir -p build/level1-calculator build/level1-guessing
+          javac -d build/level1-calculator Level-1/Basic-Calculator/src/*.java
+          javac -d build/level1-guessing Level-1/Number-Guessing-Game/src/*.java
+
+      - name: Test Basic Calculator
+        run: |
+          output=$(printf '10\n+\n5\n' | java -cp build/level1-calculator BasicCalculator)
+          printf '%s\n' "$output"
+          grep -q 'Result = 15.0' <<< "$output"
+
+          output=$(printf '10\n/\n0\n' | java -cp build/level1-calculator BasicCalculator)
+          grep -q 'Cannot divide by zero' <<< "$output"
+
+      - name: Test Number Guessing Game startup validation
+        run: |
+          set +e
+          output=$(timeout 2s bash -c "printf 'abc\\n' | java -cp build/level1-guessing NumberGuessingGame" 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          test "$status" -eq 124
+          grep -q 'Please enter a valid integer' <<< "$output"
+
+      - name: Compile Level 2 projects
+        run: |
+          mkdir -p build/level2-banking build/level2-employees
+          javac -d build/level2-banking Level-2/Banking-Application/src/*.java
+          javac -d build/level2-employees Level-2/Employee-Management-System/src/*.java
+
+      - name: Test Banking Application
+        run: |
+          output=$(printf '1\nACC001\nLomesh Pawar\n1000\n2\nACC001\n250\n3\nACC001\n100\n4\nACC001\n5\nACC001\n6\n' | java -cp build/level2-banking BankingApplication)
+          printf '%s\n' "$output"
+          grep -q 'Account created successfully.' <<< "$output"
+          grep -q 'Deposit successful.' <<< "$output"
+          grep -q 'Withdrawal successful.' <<< "$output"
+          grep -q 'Current balance: 1150.00' <<< "$output"
+          grep -q 'Thank you!' <<< "$output"
+
+      - name: Test Employee Management System
+        run: |
+          output=$(printf '1\n101\nLomesh Pawar\nEngineering\n50000\n2\n3\n101\n4\n101\nLomesh Pawar Updated\nTechnology\n55000\n5\n101\n6\n' | java -cp build/level2-employees EmployeeManagementSystem)
+          printf '%s\n' "$output"
+          grep -q 'Employee added.' <<< "$output"
+          grep -q 'ID: 101' <<< "$output"
+          grep -q 'Employee updated.' <<< "$output"
+          grep -q 'Employee deleted.' <<< "$output"
+          grep -q 'Goodbye!' <<< "$output"
+
       - name: Download MySQL Connector/J
         run: |
-          mkdir -p Level-3/Library-Management-JDBC/lib
-          curl -L -o Level-3/Library-Management-JDBC/lib/mysql-connector-j.jar \
+          mkdir -p build/jdbc-lib
+          curl -fsSL -o build/jdbc-lib/mysql-connector-j.jar \
             https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/9.4.0/mysql-connector-j-9.4.0.jar
 
       - name: Compile Level 3 projects
         run: |
-          mkdir -p Level-3/Library-Management-JDBC/out
-          mkdir -p Level-3/Multithreaded-Chat/out
-          javac -cp 'Level-3/Library-Management-JDBC/lib/mysql-connector-j.jar' \
-            -d Level-3/Library-Management-JDBC/out Level-3/Library-Management-JDBC/src/*.java
-          javac -d Level-3/Multithreaded-Chat/out Level-3/Multithreaded-Chat/src/*.java
+          mkdir -p build/level3-jdbc build/level3-chat
+          javac -cp build/jdbc-lib/mysql-connector-j.jar -d build/level3-jdbc Level-3/Library-Management-JDBC/src/*.java
+          javac -d build/level3-chat Level-3/Multithreaded-Chat/src/*.java
 
       - name: Test Library Management JDBC
         env:
@@ -56,79 +107,63 @@ jobs:
           LIBRARY_DB_USER: root
           LIBRARY_DB_PASSWORD: root
         run: |
-          mkdir -p Level-3/Library-Management-JDBC/test-output
-          printf '1\nJava Programming\nJames Gosling\n2\n3\nLomesh Pawar\nlomesh@example.com\n4\n1\n1\n6\n5\n1\n6\n7\n' |
-            java -cp 'Level-3/Library-Management-JDBC/out:Level-3/Library-Management-JDBC/lib/mysql-connector-j.jar' LibraryManagementJDBC \
-            | tee Level-3/Library-Management-JDBC/test-output/execution.txt
-          grep -q 'Database ready.' Level-3/Library-Management-JDBC/test-output/execution.txt
-          grep -q 'Book added.' Level-3/Library-Management-JDBC/test-output/execution.txt
-          grep -q 'Member added.' Level-3/Library-Management-JDBC/test-output/execution.txt
-          grep -q 'Book issued.' Level-3/Library-Management-JDBC/test-output/execution.txt
-          grep -q 'Book returned.' Level-3/Library-Management-JDBC/test-output/execution.txt
-          grep -q 'Goodbye!' Level-3/Library-Management-JDBC/test-output/execution.txt
+          output=$(printf '1\nJava Programming\nJames Gosling\n3\nLomesh Pawar\nlomesh@example.com\n4\n1\n1\n6\n5\n1\n6\n2\n7\n' | java -cp 'build/level3-jdbc:build/jdbc-lib/mysql-connector-j.jar' LibraryManagementJDBC)
+          printf '%s\n' "$output"
+          grep -q 'Database ready.' <<< "$output"
+          grep -q 'Book added successfully.' <<< "$output"
+          grep -q 'Member added successfully.' <<< "$output"
+          grep -q 'Book issued successfully.' <<< "$output"
+          grep -q 'Book returned successfully.' <<< "$output"
+          grep -q 'Returned:' <<< "$output"
+          grep -q 'Available' <<< "$output"
+          grep -q 'Goodbye!' <<< "$output"
 
       - name: Test Multithreaded Chat
         run: |
-          mkdir -p Level-3/Multithreaded-Chat/test-output
-          java -cp Level-3/Multithreaded-Chat/out ChatServer > Level-3/Multithreaded-Chat/test-output/server.txt 2>&1 &
-          SERVER_PID=$!
-          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          java -cp build/level3-chat ChatServer > /tmp/chat-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid 2>/dev/null || true' EXIT
           sleep 2
+
           python3 - <<'PY'
-          import socket, time
+          import socket
+          import time
+
           def connect(name):
-              s=socket.create_connection(('127.0.0.1',5000),timeout=5)
-              s.settimeout(2)
-              s.recv(1024)
-              s.sendall((name+'\n').encode())
-              return s
-          a=connect('Lomesh')
-          time.sleep(.3)
-          b=connect('Friend')
-          time.sleep(.5)
-          a.sendall(b'Hello Friend!\n')
-          b.sendall(b'Hello Lomesh!\n')
-          time.sleep(.5)
-          data_a=a.recv(4096).decode(errors='replace')
-          data_b=b.recv(4096).decode(errors='replace')
-          open('Level-3/Multithreaded-Chat/test-output/client1.txt','w').write(data_a)
-          open('Level-3/Multithreaded-Chat/test-output/client2.txt','w').write(data_b)
-          a.sendall(b'/quit\n')
-          b.sendall(b'/quit\n')
-          a.close(); b.close()
-          PY
-          grep -q 'Hello Friend!' Level-3/Multithreaded-Chat/test-output/client2.txt
-          grep -q 'Hello Lomesh!' Level-3/Multithreaded-Chat/test-output/client1.txt
+              sock = socket.create_connection(('127.0.0.1', 5000), timeout=5)
+              sock.settimeout(2)
+              sock.recv(1024)
+              sock.sendall((name + '\n').encode())
+              return sock
 
-      - name: Create execution screenshots
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import html
-          def svg(out, title, lines):
-              lines=[x.rstrip() for x in lines.splitlines() if x.strip()]
-              shown=lines[-28:]
-              body=''.join(f'<text x="24" y="{48+i*22}">{html.escape(x)}</text>' for i,x in enumerate(shown))
-              height=70+len(shown)*22
-              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="{height}" viewBox="0 0 1200 {height}">
-          <rect width="1200" height="{height}" fill="#111827" rx="12"/>
-          <circle cx="24" cy="22" r="6" fill="#ef4444"/><circle cx="44" cy="22" r="6" fill="#f59e0b"/><circle cx="64" cy="22" r="6" fill="#22c55e"/>
-          <text x="90" y="27" fill="#d1d5db" font-family="monospace" font-size="14">{html.escape(title)}</text>
-          <g fill="#e5e7eb" font-family="monospace" font-size="16">{body}</g></svg>'''
-          jdbc=Path('Level-3/Library-Management-JDBC/test-output/execution.txt').read_text()
-          Path('Level-3/Library-Management-JDBC/screenshots/execution-success.svg').write_text(svg('execution-success.svg','Library Management JDBC — automated execution',jdbc))
-          c1=Path('Level-3/Multithreaded-Chat/test-output/client1.txt').read_text()
-          c2=Path('Level-3/Multithreaded-Chat/test-output/client2.txt').read_text()
-          server=Path('Level-3/Multithreaded-Chat/test-output/server.txt').read_text()
-          combined='Client 1 (Lomesh):\n'+c1+'\nClient 2 (Friend):\n'+c2+'\nServer:\n'+server
-          Path('Level-3/Multithreaded-Chat/screenshots/multiclient-execution-success.svg').write_text(svg('multiclient-execution-success.svg','Multithreaded Chat — automated execution',combined))
+          alice = connect('Lomesh')
+          time.sleep(0.3)
+          bob = connect('Friend')
+          time.sleep(0.5)
+
+          alice.sendall(b'Hello Friend!\n')
+          bob.sendall(b'Hello Lomesh!\n')
+          time.sleep(0.5)
+
+          data_alice = alice.recv(4096).decode(errors='replace')
+          data_bob = bob.recv(4096).decode(errors='replace')
+
+          assert 'Hello Lomesh!' in data_alice
+          assert 'Hello Friend!' in data_bob
+
+          alice.sendall(b'/quit\n')
+          bob.sendall(b'/quit\n')
+          alice.close()
+          bob.close()
+          print('Multithreaded chat test passed.')
           PY
 
-      - name: Commit verified screenshots
+      - name: Verify project documentation
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Level-3/*/screenshots/*.svg
-          git diff --cached --quiet && exit 0
-          git commit -m 'test: add automated Level 3 execution screenshots'
-          git push
+          test -f README.md
+          test -f Level-1/Basic-Calculator/README.md
+          test -f Level-1/Number-Guessing-Game/README.md
+          test -f Level-2/Banking-Application/README.md
+          test -f Level-2/Employee-Management-System/README.md
+          test -f Level-3/Library-Management-JDBC/README.md
+          test -f Level-3/Multithreaded-Chat/README.md
