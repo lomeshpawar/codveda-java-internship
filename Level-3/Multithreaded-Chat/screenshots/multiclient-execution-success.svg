@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="268" viewBox="0 0 1200 268">
+<rect width="1200" height="268" fill="#111827" rx="12"/>
+<circle cx="24" cy="22" r="6" fill="#ef4444"/><circle cx="44" cy="22" r="6" fill="#f59e0b"/><circle cx="64" cy="22" r="6" fill="#22c55e"/>
+<text x="90" y="27" fill="#d1d5db" font-family="monospace" font-size="14">Multithreaded Chat — automated execution</text>
+<g fill="#e5e7eb" font-family="monospace" font-size="16"><text x="24" y="48">Client 1 (Lomesh):</text><text x="24" y="70">Welcome, Lomesh! Type messages below.</text><text x="24" y="92">Friend joined the chat.</text><text x="24" y="114">Friend: Hello Lomesh!</text><text x="24" y="136">Client 2 (Friend):</text><text x="24" y="158">Welcome, Friend! Type messages below.</text><text x="24" y="180">Lomesh: Hello Friend!</text><text x="24" y="202">Server:</text><text x="24" y="224">Chat server starting on port 5000...</text></g></svg>
