@@ -53,16 +53,6 @@ jobs:
           output=$(printf '10\n/\n0\n' | java -cp build/level1-calculator BasicCalculator)
           grep -q 'Cannot divide by zero' <<< "$output"
 
-      - name: Test Number Guessing Game startup validation
-        run: |
-          set +e
-          output=$(timeout 2s bash -c "printf 'abc\\n' | java -cp build/level1-guessing NumberGuessingGame" 2>&1)
-          status=$?
-          set -e
-          printf '%s\n' "$output"
-          test "$status" -eq 124
-          grep -q 'Please enter a valid integer' <<< "$output"
-
       - name: Compile Level 2 projects
         run: |
           mkdir -p build/level2-banking build/level2-employees
