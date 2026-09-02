@@ -2,7 +2,7 @@
 <rect width="1400" height="760" fill="#0b0f14"/>
 <rect x="24" y="24" width="1352" height="712" rx="12" fill="#111827" stroke="#374151"/>
 <circle cx="52" cy="50" r="7" fill="#ef4444"/><circle cx="76" cy="50" r="7" fill="#f59e0b"/><circle cx="100" cy="50" r="7" fill="#22c55e"/>
-<text x="126" y="56" fill="#d1d5db" font-family="monospace" font-size="18">Library Management System (JDBC) — verified execution</text>
+<text x="126" y="56" fill="#d1d5db" font-family="monospace" font-size="18">Library Management System (JDBC) — execution flow</text>
 <g fill="#f3f4f6" font-family="monospace" font-size="17">
 <text x="48" y="96">Database ready.</text>
 <text x="48" y="128">=== Library Management System (JDBC) ===</text>
@@ -14,5 +14,5 @@
 <text x="760" y="190">Choose: 6</text><text x="760" y="216">Issue 1 | Book: Java Programming | Member: Lomesh Pawar</text><text x="760" y="242">Issued: 2026-09-02 | Returned: 2026-09-02</text>
 <text x="760" y="284">Choose: 2</text><text x="760" y="310">1 | Java Programming | James Gosling | Available</text>
 <text x="760" y="352">Choose: 7</text><text x="760" y="378">Goodbye!</text>
-<text x="760" y="438">Verification:</text><text x="760" y="466">✓ Database connection</text><text x="760" y="494">✓ Add book / member</text><text x="760" y="522">✓ Issue transaction</text><text x="760" y="550">✓ Return transaction</text><text x="760" y="578">✓ Issue history</text><text x="760" y="606">✓ Clean exit</text>
+<text x="760" y="438">Flow covered:</text><text x="760" y="466">✓ Database connection</text><text x="760" y="494">✓ Add book / member</text><text x="760" y="522">✓ Issue transaction</text><text x="760" y="550">✓ Return transaction</text><text x="760" y="578">✓ Issue history</text><text x="760" y="606">✓ Clean exit</text>
 </g></svg>
