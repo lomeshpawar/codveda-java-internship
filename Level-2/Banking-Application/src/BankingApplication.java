@@ -25,6 +25,7 @@ public class BankingApplication {
                 case 5 -> viewAccount();
                 case 6 -> {
                     System.out.println("Thank you!");
+                    scanner.close();
                     return;
                 }
                 default -> System.out.println("Invalid choice.");
@@ -36,6 +37,11 @@ public class BankingApplication {
         System.out.print("Account number: ");
         String number = scanner.nextLine().trim();
 
+        if (number.isBlank()) {
+            System.out.println("Account number is required.");
+            return;
+        }
+
         if (accounts.containsKey(number)) {
             System.out.println("Account already exists.");
             return;
@@ -43,6 +49,11 @@ public class BankingApplication {
 
         System.out.print("Holder name: ");
         String name = scanner.nextLine().trim();
+        if (name.isBlank()) {
+            System.out.println("Holder name is required.");
+            return;
+        }
+
         System.out.print("Initial deposit: ");
         double amount = readDouble();
 
@@ -52,7 +63,8 @@ public class BankingApplication {
 
     private static BankAccount getAccount() {
         System.out.print("Account number: ");
-        BankAccount account = accounts.get(scanner.nextLine().trim());
+        String number = scanner.nextLine().trim();
+        BankAccount account = accounts.get(number);
         if (account == null) System.out.println("Account not found.");
         return account;
     }
@@ -107,7 +119,7 @@ public class BankingApplication {
         while (true) {
             try {
                 double value = Double.parseDouble(scanner.nextLine().trim());
-                if (value < 0) throw new NumberFormatException();
+                if (!Double.isFinite(value) || value < 0) throw new NumberFormatException();
                 return value;
             } catch (NumberFormatException e) {
                 System.out.print("Enter a valid non-negative number: ");
