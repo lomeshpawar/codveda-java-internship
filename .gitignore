@@ -1,0 +1,34 @@
+# Java compiled files
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# Build output
+bin/
+out/
+target/
+build/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment and secrets
+.env
+.env.*
+*.properties
+!example.properties
+
+# Database dumps / local data
+*.sql.gz
+*.sqlite
+*.db
