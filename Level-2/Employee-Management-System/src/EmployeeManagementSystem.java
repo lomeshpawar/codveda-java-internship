@@ -26,6 +26,7 @@ public class EmployeeManagementSystem {
                 case 5 -> deleteEmployee();
                 case 6 -> {
                     System.out.println("Goodbye!");
+                    scanner.close();
                     return;
                 }
                 default -> System.out.println("Invalid choice.");
@@ -37,15 +38,30 @@ public class EmployeeManagementSystem {
         System.out.print("ID: ");
         int id = readInt();
 
+        if (id <= 0) {
+            System.out.println("Employee ID must be positive.");
+            return;
+        }
+
         if (findById(id) != null) {
             System.out.println("Employee ID already exists.");
             return;
         }
 
         System.out.print("Name: ");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().trim();
+        if (name.isBlank()) {
+            System.out.println("Name is required.");
+            return;
+        }
+
         System.out.print("Department: ");
-        String department = scanner.nextLine();
+        String department = scanner.nextLine().trim();
+        if (department.isBlank()) {
+            System.out.println("Department is required.");
+            return;
+        }
+
         System.out.print("Salary: ");
         double salary = readDouble();
 
@@ -77,12 +93,25 @@ public class EmployeeManagementSystem {
         }
 
         System.out.print("New name: ");
-        employee.setName(scanner.nextLine());
-        System.out.print("New department: ");
-        employee.setDepartment(scanner.nextLine());
-        System.out.print("New salary: ");
-        employee.setSalary(readDouble());
+        String name = scanner.nextLine().trim();
+        if (name.isBlank()) {
+            System.out.println("Name is required.");
+            return;
+        }
 
+        System.out.print("New department: ");
+        String department = scanner.nextLine().trim();
+        if (department.isBlank()) {
+            System.out.println("Department is required.");
+            return;
+        }
+
+        System.out.print("New salary: ");
+        double salary = readDouble();
+
+        employee.setName(name);
+        employee.setDepartment(department);
+        employee.setSalary(salary);
         System.out.println("Employee updated.");
     }
 
@@ -109,8 +138,7 @@ public class EmployeeManagementSystem {
     private static int readInt() {
         while (true) {
             try {
-                int value = Integer.parseInt(scanner.nextLine().trim());
-                return value;
+                return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.print("Enter a valid integer: ");
             }
@@ -121,7 +149,7 @@ public class EmployeeManagementSystem {
         while (true) {
             try {
                 double value = Double.parseDouble(scanner.nextLine().trim());
-                if (value < 0) throw new NumberFormatException();
+                if (!Double.isFinite(value) || value < 0) throw new NumberFormatException();
                 return value;
             } catch (NumberFormatException e) {
                 System.out.print("Enter a valid non-negative number: ");
