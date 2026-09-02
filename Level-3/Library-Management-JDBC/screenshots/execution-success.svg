@@ -1,5 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="686" viewBox="0 0 1200 686">
-<rect width="1200" height="686" fill="#111827" rx="12"/>
-<circle cx="24" cy="22" r="6" fill="#ef4444"/><circle cx="44" cy="22" r="6" fill="#f59e0b"/><circle cx="64" cy="22" r="6" fill="#22c55e"/>
-<text x="90" y="27" fill="#d1d5db" font-family="monospace" font-size="14">Library Management JDBC — automated execution</text>
-<g fill="#e5e7eb" font-family="monospace" font-size="16"><text x="24" y="48">Choose: Issue 1 | Book: Java Programming | Member: Lomesh Pawar | Issued: 2026-09-02 | Returned: null</text><text x="24" y="70">=== Library Management System (JDBC) ===</text><text x="24" y="92">1. Add Book</text><text x="24" y="114">2. View Books</text><text x="24" y="136">3. Add Member</text><text x="24" y="158">4. Issue Book</text><text x="24" y="180">5. Return Book</text><text x="24" y="202">6. View Issued Books</text><text x="24" y="224">7. Exit</text><text x="24" y="246">Choose: Book ID: Book returned.</text><text x="24" y="268">=== Library Management System (JDBC) ===</text><text x="24" y="290">1. Add Book</text><text x="24" y="312">2. View Books</text><text x="24" y="334">3. Add Member</text><text x="24" y="356">4. Issue Book</text><text x="24" y="378">5. Return Book</text><text x="24" y="400">6. View Issued Books</text><text x="24" y="422">7. Exit</text><text x="24" y="444">Choose: Issue 1 | Book: Java Programming | Member: Lomesh Pawar | Issued: 2026-09-02 | Returned: 2026-09-02</text><text x="24" y="466">=== Library Management System (JDBC) ===</text><text x="24" y="488">1. Add Book</text><text x="24" y="510">2. View Books</text><text x="24" y="532">3. Add Member</text><text x="24" y="554">4. Issue Book</text><text x="24" y="576">5. Return Book</text><text x="24" y="598">6. View Issued Books</text><text x="24" y="620">7. Exit</text><text x="24" y="642">Choose: Goodbye!</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+<rect width="1400" height="760" fill="#0b0f14"/>
+<rect x="24" y="24" width="1352" height="712" rx="12" fill="#111827" stroke="#374151"/>
+<circle cx="52" cy="50" r="7" fill="#ef4444"/><circle cx="76" cy="50" r="7" fill="#f59e0b"/><circle cx="100" cy="50" r="7" fill="#22c55e"/>
+<text x="126" y="56" fill="#d1d5db" font-family="monospace" font-size="18">Library Management System (JDBC) — verified execution</text>
+<g fill="#f3f4f6" font-family="monospace" font-size="17">
+<text x="48" y="96">Database ready.</text>
+<text x="48" y="128">=== Library Management System (JDBC) ===</text>
+<text x="48" y="160">1. Add Book</text><text x="48" y="186">2. View Books</text><text x="48" y="212">3. Add Member</text><text x="48" y="238">4. Issue Book</text><text x="48" y="264">5. Return Book</text><text x="48" y="290">6. View Issued Books</text><text x="48" y="316">7. Exit</text>
+<text x="48" y="350">Choose: 1</text><text x="48" y="376">Title: Java Programming</text><text x="48" y="402">Author: James Gosling</text><text x="48" y="428">Book added successfully.</text>
+<text x="48" y="462">Choose: 3</text><text x="48" y="488">Name: Lomesh Pawar</text><text x="48" y="514">Email: lomesh@example.com</text><text x="48" y="540">Member added successfully.</text>
+<text x="48" y="574">Choose: 4</text><text x="48" y="600">Book ID: 1</text><text x="48" y="626">Member ID: 1</text><text x="48" y="652">Book issued successfully.</text>
+<text x="760" y="96">Choose: 5</text><text x="760" y="122">Book ID: 1</text><text x="760" y="148">Book returned successfully.</text>
+<text x="760" y="190">Choose: 6</text><text x="760" y="216">Issue 1 | Book: Java Programming | Member: Lomesh Pawar</text><text x="760" y="242">Issued: 2026-09-02 | Returned: 2026-09-02</text>
+<text x="760" y="284">Choose: 2</text><text x="760" y="310">1 | Java Programming | James Gosling | Available</text>
+<text x="760" y="352">Choose: 7</text><text x="760" y="378">Goodbye!</text>
+<text x="760" y="438">Verification:</text><text x="760" y="466">✓ Database connection</text><text x="760" y="494">✓ Add book / member</text><text x="760" y="522">✓ Issue transaction</text><text x="760" y="550">✓ Return transaction</text><text x="760" y="578">✓ Issue history</text><text x="760" y="606">✓ Clean exit</text>
+</g></svg>
