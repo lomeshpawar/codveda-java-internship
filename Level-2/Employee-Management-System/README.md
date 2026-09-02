@@ -1,25 +1,32 @@
 # Employee Management System
 
-## Features
-- Add employee
-- View employees
-- Search by ID
-- Update employee
-- Delete employee
-- Input validation
+A Java console application for managing employee records using object-oriented programming and an in-memory collection.
 
-## Concepts
+## Features
+
+- Add employees
+- View employee records
+- Search by employee ID
+- Update employee details
+- Delete employees
+- Input validation and duplicate-ID protection
+
+## Concepts Demonstrated
+
 - Classes and objects
 - Encapsulation
-- ArrayList
-- Methods
-- Loops and switch
+- `ArrayList`
+- CRUD-style application logic
+- Loops and `switch`
 - Exception handling
 
 ## Run
+
 ```bash
 javac src/*.java
 java -cp src EmployeeManagementSystem
 ```
 
-Add execution screenshots to `screenshots/`.
+## Sample Execution
+
+![Employee Management System execution](screenshots/employee-management-system.svg)
