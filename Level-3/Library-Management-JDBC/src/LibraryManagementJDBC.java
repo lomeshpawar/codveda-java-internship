@@ -74,9 +74,14 @@ public class LibraryManagementJDBC {
 
     private static void addBook() throws SQLException {
         System.out.print("Title: ");
-        String title = scanner.nextLine();
+        String title = scanner.nextLine().trim();
         System.out.print("Author: ");
-        String author = scanner.nextLine();
+        String author = scanner.nextLine().trim();
+
+        if (title.isBlank() || author.isBlank()) {
+            System.out.println("Title and author are required.");
+            return;
+        }
 
         String sql = "INSERT INTO books(title, author) VALUES (?, ?)";
 
@@ -85,7 +90,7 @@ public class LibraryManagementJDBC {
             ps.setString(1, title);
             ps.setString(2, author);
             ps.executeUpdate();
-            System.out.println("Book added.");
+            System.out.println("Book added successfully.");
         }
     }
 
@@ -95,22 +100,29 @@ public class LibraryManagementJDBC {
         try (Connection con = DBConnection.getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-
+            boolean found = false;
             while (rs.next()) {
+                found = true;
                 System.out.printf("%d | %s | %s | %s%n",
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getBoolean("available") ? "Available" : "Issued");
             }
+            if (!found) System.out.println("No books found.");
         }
     }
 
     private static void addMember() throws SQLException {
         System.out.print("Name: ");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().trim();
         System.out.print("Email: ");
-        String email = scanner.nextLine();
+        String email = scanner.nextLine().trim();
+
+        if (name.isBlank() || email.isBlank()) {
+            System.out.println("Name and email are required.");
+            return;
+        }
 
         String sql = "INSERT INTO members(name, email) VALUES (?, ?)";
 
@@ -119,7 +131,7 @@ public class LibraryManagementJDBC {
             ps.setString(1, name);
             ps.setString(2, email);
             ps.executeUpdate();
-            System.out.println("Member added.");
+            System.out.println("Member added successfully.");
         }
     }
 
@@ -129,37 +141,48 @@ public class LibraryManagementJDBC {
         System.out.print("Member ID: ");
         int memberId = readInt();
 
-        String check = "SELECT available FROM books WHERE id = ?";
+        if (!exists("books", bookId) || !exists("members", memberId)) {
+            System.out.println("Invalid book ID or member ID.");
+            return;
+        }
+
+        String check = "SELECT available FROM books WHERE id = ? FOR UPDATE";
         String insert = "INSERT INTO issues(book_id, member_id, issue_date) VALUES (?, ?, CURRENT_DATE)";
         String update = "UPDATE books SET available = FALSE WHERE id = ?";
 
         try (Connection con = DBConnection.getConnection()) {
             con.setAutoCommit(false);
-
-            try (PreparedStatement ps = con.prepareStatement(check)) {
-                ps.setInt(1, bookId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (!rs.next() || !rs.getBoolean("available")) {
-                        System.out.println("Book not available.");
-                        con.rollback();
-                        return;
+            try {
+                try (PreparedStatement ps = con.prepareStatement(check)) {
+                    ps.setInt(1, bookId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next() || !rs.getBoolean("available")) {
+                            System.out.println("Book is not available.");
+                            con.rollback();
+                            return;
+                        }
                     }
                 }
-            }
 
-            try (PreparedStatement ps = con.prepareStatement(insert)) {
-                ps.setInt(1, bookId);
-                ps.setInt(2, memberId);
-                ps.executeUpdate();
-            }
+                try (PreparedStatement ps = con.prepareStatement(insert)) {
+                    ps.setInt(1, bookId);
+                    ps.setInt(2, memberId);
+                    ps.executeUpdate();
+                }
 
-            try (PreparedStatement ps = con.prepareStatement(update)) {
-                ps.setInt(1, bookId);
-                ps.executeUpdate();
-            }
+                try (PreparedStatement ps = con.prepareStatement(update)) {
+                    ps.setInt(1, bookId);
+                    ps.executeUpdate();
+                }
 
-            con.commit();
-            System.out.println("Book issued.");
+                con.commit();
+                System.out.println("Book issued successfully.");
+            } catch (SQLException e) {
+                con.rollback();
+                throw e;
+            } finally {
+                con.setAutoCommit(true);
+            }
         }
     }
 
@@ -173,34 +196,40 @@ public class LibraryManagementJDBC {
 
         try (Connection con = DBConnection.getConnection()) {
             con.setAutoCommit(false);
+            try {
+                Integer issueId = null;
 
-            Integer issueId = null;
-
-            try (PreparedStatement ps = con.prepareStatement(findIssue)) {
-                ps.setInt(1, bookId);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) issueId = rs.getInt("id");
+                try (PreparedStatement ps = con.prepareStatement(findIssue)) {
+                    ps.setInt(1, bookId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) issueId = rs.getInt("id");
+                    }
                 }
-            }
 
-            if (issueId == null) {
-                System.out.println("No active issue found for this book.");
+                if (issueId == null) {
+                    System.out.println("No active issue found for this book.");
+                    con.rollback();
+                    return;
+                }
+
+                try (PreparedStatement ps = con.prepareStatement(returnSql)) {
+                    ps.setInt(1, issueId);
+                    ps.executeUpdate();
+                }
+
+                try (PreparedStatement ps = con.prepareStatement(bookSql)) {
+                    ps.setInt(1, bookId);
+                    ps.executeUpdate();
+                }
+
+                con.commit();
+                System.out.println("Book returned successfully.");
+            } catch (SQLException e) {
                 con.rollback();
-                return;
+                throw e;
+            } finally {
+                con.setAutoCommit(true);
             }
-
-            try (PreparedStatement ps = con.prepareStatement(returnSql)) {
-                ps.setInt(1, issueId);
-                ps.executeUpdate();
-            }
-
-            try (PreparedStatement ps = con.prepareStatement(bookSql)) {
-                ps.setInt(1, bookId);
-                ps.executeUpdate();
-            }
-
-            con.commit();
-            System.out.println("Book returned.");
         }
     }
 
@@ -212,14 +241,27 @@ public class LibraryManagementJDBC {
         try (Connection con = DBConnection.getConnection();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-
+            boolean found = false;
             while (rs.next()) {
+                found = true;
                 System.out.printf("Issue %d | Book: %s | Member: %s | Issued: %s | Returned: %s%n",
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getString("name"),
                         rs.getDate("issue_date"),
                         rs.getDate("return_date"));
+            }
+            if (!found) System.out.println("No issue history found.");
+        }
+    }
+
+    private static boolean exists(String table, int id) throws SQLException {
+        String sql = "SELECT 1 FROM " + table + " WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
         }
     }
