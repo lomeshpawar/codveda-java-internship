@@ -1,21 +1,25 @@
 # Basic Calculator
 
-## Objective
-Create a command-line calculator using Java.
+A command-line calculator built with Java to demonstrate core programming fundamentals, user input, operators, switch-case logic, and input validation.
 
 ## Features
-- Addition
-- Subtraction
-- Multiplication
-- Division
-- Modulo
-- Division-by-zero validation
+
+- Addition, subtraction, multiplication, division, and modulo
+- Console-based user interaction
+- Division-by-zero and modulo-by-zero validation
+- Simple, readable Java implementation
 
 ## Run
+
 ```bash
 javac src/BasicCalculator.java
 java -cp src BasicCalculator
 ```
 
-## Screenshot
-Add your execution screenshot to `screenshots/`.
+## Sample Execution
+
+![Basic Calculator execution](screenshots/basic-calculator.svg)
+
+## Concepts Demonstrated
+
+Java fundamentals • `Scanner` • `switch` • conditional validation • arithmetic operations
