@@ -30,29 +30,23 @@ codveda-java-internship/
 ├── Level-1/
 │   ├── Basic-Calculator/
 │   │   ├── src/
-│   │   ├── screenshots/
 │   │   └── README.md
 │   └── Number-Guessing-Game/
 │       ├── src/
-│       ├── screenshots/
 │       └── README.md
 ├── Level-2/
 │   ├── Banking-Application/
 │   │   ├── src/
-│   │   ├── screenshots/
 │   │   └── README.md
 │   └── Employee-Management-System/
 │       ├── src/
-│       ├── screenshots/
 │       └── README.md
 ├── Level-3/
 │   ├── Library-Management-JDBC/
 │   │   ├── src/
-│   │   ├── screenshots/
 │   │   └── README.md
 │   └── Multithreaded-Chat/
 │       ├── src/
-│       ├── screenshots/
 │       └── README.md
 ├── .github/workflows/level3-test.yml
 ├── .gitignore
@@ -110,9 +104,9 @@ The repository includes a GitHub Actions workflow that automatically:
 
 The CI workflow is intentionally read-only and does not modify the repository during a test run.
 
-## Screenshots & Execution Evidence
+## Automated Execution Evidence
 
-Each project contains a `screenshots/` directory with representative execution evidence. Level 3 also has automated CI coverage for database and networking functionality.
+The repository currently does not track screenshot assets. Instead, the [Java CI workflow](https://github.com/lomeshpawar/codveda-java-internship/actions/workflows/level3-test.yml) provides reproducible execution checks for the six projects, including JDBC operations against a temporary MySQL service and message exchange between two chat clients. Review the workflow run logs for the actual output of each check.
 
 ## Learning Progression
 
