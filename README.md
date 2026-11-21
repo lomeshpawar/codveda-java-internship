@@ -44,6 +44,7 @@ codveda-java-internship/
 ├── Level-3/
 │   ├── Library-Management-JDBC/
 │   │   ├── src/
+│   │   ├── screenshots/
 │   │   └── README.md
 │   └── Multithreaded-Chat/
 │       ├── src/
@@ -106,7 +107,7 @@ The CI workflow is intentionally read-only and does not modify the repository du
 
 ## Automated Execution Evidence
 
-The repository currently does not track screenshot assets. Instead, the [Java CI workflow](https://github.com/lomeshpawar/codveda-java-internship/actions/workflows/level3-test.yml) provides reproducible execution checks for the six projects, including JDBC operations against a temporary MySQL service and message exchange between two chat clients. Review the workflow run logs for the actual output of each check.
+The repository includes one **illustrative execution-flow SVG** for the Library Management JDBC project: [View execution flow](Level-3/Library-Management-JDBC/screenshots/execution-success.svg). It is a manually authored illustration, not a captured terminal screenshot or proof of a live database session. Reproducible execution checks for the six projects are provided by the [Java CI workflow](https://github.com/lomeshpawar/codveda-java-internship/actions/workflows/level3-test.yml), including JDBC operations against a temporary MySQL service and message exchange between two chat clients. Review the workflow run logs for actual test output.
 
 ## Learning Progression
 
